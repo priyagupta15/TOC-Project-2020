@@ -6,40 +6,73 @@ from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-
 from fsm import TocMachine
 from utils import send_text_message
-
 load_dotenv()
 
 
 machine = TocMachine(
-    states=["user", "state1", "state2" , "state3"],
+    states=[
+            "user",
+            "country",
+            "food" ,
+            "spicy",
+            "sweet",
+            "weather",
+            "places",
+            "location",
+            "summer",
+            "winter"
+            ],
+
+
+
     transitions=[
-        {
-            "trigger": "advance",
-            "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
-        },
-        {
-            "trigger": "advance",
-            "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
-        },
+
+        { "trigger": "advance", "source": "user",       "dest": "country",   "conditions": "is_going_to_country",  },
+
+        { "trigger": "advance", "source": "country",    "dest": "food",      "conditions": "is_going_to_food",     },
+        { "trigger": "advance", "source": "food",       "dest": "spicy",     "conditions": "is_going_to_spicy",    },
+        { "trigger": "advance", "source": "food",       "dest": "sweet",     "conditions": "is_going_to_sweet",    },
+
+
+        { "trigger": "advance", "source": "country",    "dest": "weather",    "conditions": "is_going_to_weather",  },
+        { "trigger": "advance", "source": "weather",    "dest": "summer",     "conditions":  "is_going_to_summer",  },
+        { "trigger": "advance", "source": "weather",    "dest": "winter",     "conditions":  "is_going_to_winter",  },
+
+
+        { "trigger": "advance", "source": "country",    "dest": "places",     "conditions": "is_going_to_places",     },
+
+        { "trigger": "advance", "source": "country",    "dest": "location",   "conditions": "is_going_to_location",   },
+        
+        #okay state
+        #{ "trigger": "advance", "source": ["weather","spicy","sweet"],    "dest": "country",    "conditions": "is_going_to_okay",  },
+
+
+
+
+
 
         {
-            "trigger": "advance",
-            "source": "user",
-            "dest": "state3",
-            "conditions": "is_going_to_state3",
+            "trigger":  "go_back", 
+            "source":   ["user", "country"],
+            "dest":      "user" 
         },
 
-        {"trigger": "go_back", "source": ["state1", "state2", "state3"], "dest": "user"},
+
+        {
+            "trigger":  "go_back", 
+            "source":   ["food", "weather", "places", "location", "spicy", "sweet", "summer","winter"], #, "winter" 
+            "dest":      "country" 
+        },
+
+        #{"trigger": "go_back", "source": "state2", "dest": "state1"},
+
+
+
     ],
     initial="user",
-    auto_transitions=True,
+    auto_transitions=False,
     show_conditions=True,
 )
 
@@ -112,8 +145,7 @@ def webhook_handler():
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
         if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
-
+            send_text_message(event.reply_token, "Okay!")
     return "OK"
 
 
