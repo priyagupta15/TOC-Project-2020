@@ -8,6 +8,11 @@ class TocMachine(GraphMachine):
 
 #user = country = food,weather,places
 
+    #introduction
+    def is_going_to_intro(self, event):
+        text = event.message.text
+        return text.lower() == "hi" 
+
     #COUNTRY*****************************
     def is_going_to_country(self, event):
         text = event.message.text
@@ -57,16 +62,13 @@ class TocMachine(GraphMachine):
 
 
 
-
-
-
-
-
-
-
-
-
-
+   #******INTRO*****************************
+    def on_enter_intro(self, event):
+        print("I'm entering intro")
+        reply_token = event.reply_token
+        push_message("U60b1a8f3b7c86bf15a8422a5d280b43a","Hi There!")
+        send_sticker("U60b1a8f3b7c86bf15a8422a5d280b43a",'11537','52002738')
+        self.go_back()
 
 
 
@@ -78,14 +80,6 @@ class TocMachine(GraphMachine):
         send_sticker("U60b1a8f3b7c86bf15a8422a5d280b43a",'11537','52002735')
         #send_text_message(reply_token, "India")
 
-   #******OKAY*****************************
-    def on_enter_okay(self, event):
-        print("I'm entering country")
-        reply_token = event.reply_token
-        self.go_back()
-
-    def on_exit_okay(self): 
-        print("Leaving okay")
 
 
     #******FOOD*****************************
