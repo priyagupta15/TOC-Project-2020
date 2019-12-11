@@ -114,11 +114,13 @@ def callback():
             continue
         if not isinstance(event.message, TextMessage):
             continue
-
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text)
-        )
-
+        if not isinstance(event.message.text, str):
+            continue
+        print(f"\nFSM STATE: {machine.state}")
+        print(f"REQUEST BODY: \n{body}")
+        response = machine.advance(event)
+        if response == False:
+            send_text_message(event.reply_token, "Okay!")
     return "OK"
 
 
