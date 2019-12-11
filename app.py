@@ -108,7 +108,6 @@ def callback():
     except InvalidSignatureError:
         abort(400)
 
-    # if event is MessageEvent and message is TextMessage, then echo text
     for event in events:
         if not isinstance(event, MessageEvent):
             continue
@@ -122,6 +121,11 @@ def callback():
         if response == False:
             send_text_message(event.reply_token, "Okay!")
     return "OK"
+
+
+
+
+
 
 
 @app.route("/webhook", methods=["POST"])
@@ -151,6 +155,19 @@ def webhook_handler():
         if response == False:
             send_text_message(event.reply_token, "Okay!")
     return "OK"
+
+def handle_message(event):
+    # get user id when reply
+    to = event.source.user_id
+    print("user_id =", user_id)
+
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text))
+
+
+
+
 
 
 @app.route("/show-fsm", methods=["GET"])

@@ -5,7 +5,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.models import *
 
 channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
-
+#to = os.getenv("LINE_YOUR_USER_ID", None)
 
 def send_text_message(reply_token, text):
     line_bot_api = LineBotApi(channel_access_token)
@@ -14,14 +14,10 @@ def send_text_message(reply_token, text):
 
 
 
-def push_message(reply_token, text):
+def push_message(to, text):
     line_bot_api = LineBotApi(channel_access_token)
     message = TextSendMessage(text=text)
-    line_bot_api.push_message("U60b1a8f3b7c86bf15a8422a5d280b43a", message)
-
-
-
-
+    line_bot_api.push_message(to, message)
 
 
 def send_image_url(reply_token,img_url):
